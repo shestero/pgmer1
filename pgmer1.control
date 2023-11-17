@@ -1,0 +1,5 @@
+comment = 'pgmer1:  Created by pgrx'
+default_version = '@CARGO_VERSION@'
+module_pathname = '$libdir/pgmer1'
+relocatable = false
+superuser = true
