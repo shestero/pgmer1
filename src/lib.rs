@@ -36,8 +36,7 @@ fn mr_scores(ego: &'static str) -> Result<TableIterator<'static, (
     name!(score, f64)
 )>, Box<dyn std::error::Error + 'static>> {
     let url = format!("{}/scores/{}", SERVICE_URL, ego);
-    let resp = reqwest::blocking::get(url).unwrap().text();
-    let body = resp?;
+    let body: String = reqwest::blocking::get(url).unwrap().text()?;
     let json: Value = serde_json::from_str(&body)?;
     let r: Vec<Response> = serde_json::from_value(json)?;
     let v: Vec<(String, String, f64)> =
