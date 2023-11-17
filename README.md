@@ -7,6 +7,9 @@ How to run and check:
 ```
 .../pgmer1$ RUST_BACKTRACE=full cargo pgrx run
 ...
+psql (15.4)
+Type "help" for help.
+
 pgmer1=# create extension pgmer1;
 CREATE EXTENSION
 
