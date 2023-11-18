@@ -2,33 +2,43 @@
 MeritRank pgrx HTTP connector
 
 How to run and check:
-1. _ ... create edge: nodes n1 and n2 with weight 1 through API ... _
-2. run:
 ```
-.../pgmer1$ RUST_BACKTRACE=full cargo pgrx run
+.../pgmer1$ cargo pgrx run
 ...
 psql (15.4)
 Type "help" for help.
 
+//// in case you have installed previous version build drop it:
+pgmer1=# drop extension pgmer1;
+DROP EXTENSION
+
 pgmer1=# create extension pgmer1;
 CREATE EXTENSION
 
+//// just to check the extension is loaded:
 pgmer1=# select mr_service_url() ;
     mr_service_url     
 -----------------------
  http://localhost:8000
 (1 row)
 
-pgmer1=# select * from mr_scores('n1');
- node | ego |        score        
-------+-----+---------------------
- n1   | n1  |  0.5402193290475933
- n2   | n1  | 0.45978067095240666
+//// create an edge:
+pgmer1=# select mr_edge('t1','t2',1.0) ;
+                mr_edge                
+---------------------------------------
+ "Added edge t1 -> t2 with weight 1.0"
+(1 row)
+
+pgmer1=# select * from mr_scores('t1');
+ node | ego |       score        
+------+-----+--------------------
+ t1   | t1  | 0.5417118093174431
+ t2   | t1  | 0.4582881906825569
 (2 rows)
 
-pgmer1=# select * from mr_node_score('n1','n2');
-    mr_node_score    
----------------------
- 0.45978067095240666
+pgmer1=# select mr_node_score('t1','t2');
+   mr_node_score    
+--------------------
+ 0.4582881906825569
 (1 row)
 ```
