@@ -9,18 +9,18 @@ pg_module_magic!();
 const SERVICE_URL: &str = "http://localhost:8000";
 
 #[pg_extern]
-
 fn mr_service_url() -> &'static str {
     SERVICE_URL
 }
+
 #[derive(Serialize)]
-struct Request {
+struct Edge {
     src: String,
     dest: String,
     weight: f64,
 }
 #[derive(Deserialize)]
-struct Response {
+struct NodeScore {
     node: String,
     ego: String,
     score: f64,
@@ -35,7 +35,7 @@ fn mr_node_score(
     let resp = reqwest::blocking::get(url).unwrap().text();
     let body = resp?;
     let json: Value = serde_json::from_str(&body)?;
-    let r: Response = serde_json::from_value(json)?;
+    let r: NodeScore = serde_json::from_value(json)?;
     Ok(r.score)
 }
 
@@ -49,7 +49,7 @@ fn mr_scores(
     let url = format!("{}/scores/{}", SERVICE_URL, ego);
     let body: String = reqwest::blocking::get(url).unwrap().text()?;
     let json: Value = serde_json::from_str(&body)?;
-    let r: Vec<Response> = serde_json::from_value(json)?;
+    let r: Vec<NodeScore> = serde_json::from_value(json)?;
     let v: Vec<(String, String, f64)> = r
         .iter()
         .map(|row| (row.node.clone(), row.ego.clone(), row.score))
@@ -63,7 +63,7 @@ fn mr_edge(
     dest: &'static str,
     weight: f64,
 ) -> Result<String, Box<dyn std::error::Error>> {
-    let req = Request {
+    let req = Edge {
         src: src.to_string(),
         dest: dest.to_string(),
         weight,
